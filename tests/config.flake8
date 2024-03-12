@@ -1,0 +1,22 @@
+[flake8]
+select=E,W,F
+ignore=F402,E401,E7
+count=True
+statistics=True
+exclude = 
+    .dvc
+    .github
+    .git
+    data/
+    model/
+    screenshots/
+    .dvcignore
+    .gitignore
+    dvc_on_heroku_instructions.md
+    README.md
+    model_card_template.md
+    requirements.txt
+    __pycache__
+    # is not a part of student code
+    sanitycheck.py
+

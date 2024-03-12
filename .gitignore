@@ -1,0 +1,6 @@
+data/census.csv
+/config.local
+/tmp
+/cache
+dvc_on_heroku_instructions.md
+.dvc/
