@@ -1,0 +1,39 @@
+# This workflow is based on a starter workflow of "Python application"
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+
+name: flake8-pytest-on-push
+run-name: Test executed by ${{ github.actor }}
+
+on: [push]
+
+permissions:
+  contents: read
+
+jobs:
+  tests-execution:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Makes the default workspace directory accessible for a runner
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.8"
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pytest
+        # if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        
+    - name: Lint with flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --config tests/config.flake8
+        
+    - name: Test with pytest
+      run: |
+        pytest tests/ -vv
+
