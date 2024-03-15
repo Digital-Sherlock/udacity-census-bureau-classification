@@ -20,7 +20,7 @@ jobs:
               with:
                 aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
                 aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                aws-region: global
+                aws-region: Global
                 role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}
             - name: Dataset pull
               run: |
