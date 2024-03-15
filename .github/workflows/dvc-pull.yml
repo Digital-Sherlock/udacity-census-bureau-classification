@@ -22,6 +22,7 @@ jobs:
                 aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
                 aws-region: global
                 role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}
+                audience: sts.amazonaws.com
             - name: Dataset pull
               run: |
                 dvc remote add -d s3remote ${{ vars.DVC_REMOTE_DEFAULT }}
