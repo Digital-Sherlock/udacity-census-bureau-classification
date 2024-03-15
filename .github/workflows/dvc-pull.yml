@@ -1,0 +1,28 @@
+# This workflow pulls the data off of DVC remote
+# located in AWS S3 bucket
+
+
+name: dvc-pull
+run-name: dvc pull initialized by ${{ github.actor }}
+
+on: [push]
+
+jobs:
+    s3-remote-dvc-pull:
+        runs-on: ubuntu-latest
+        steps:
+            # Makes a repository default workspace available for a runner
+            - uses: actions/checkout@v2
+            # Action to set up DVC
+            - uses: iterative/setup-dvc@v1
+            - name: Configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                aws-region: global
+                role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}
+            - name: Dataset pull
+              run: |
+                dvc remote add -d s3remote ${{ vars.DVC_REMOTE_DEFAULT }}
+                dvc pull
