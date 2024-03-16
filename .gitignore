@@ -3,5 +3,5 @@ data/census.csv
 /tmp
 /cache
 dvc_on_heroku_instructions.md
-.dvc/
+.dvc/cache
 iam-vadim_accessKeys.csv

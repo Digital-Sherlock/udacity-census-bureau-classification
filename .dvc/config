@@ -1,0 +1,2 @@
+['remote "s3remote"']
+    url = s3://vadim-udacity-project-4/source-datasets
