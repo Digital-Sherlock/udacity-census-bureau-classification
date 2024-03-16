@@ -22,6 +22,7 @@ jobs:
                 aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
                 aws-region: us-east-1
                 role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}
+                role-skip-session-tagging: true
                 audience: sts.amazonaws.com
             - name: Dataset pull
               run: |
