@@ -25,4 +25,6 @@ jobs:
                 role-skip-session-tagging: true
                 audience: sts.amazonaws.com
             - name: Dataset pull
-              run: dvc pull
+              run: | 
+              dvc pull --remote s3remote
+              cd data/ && dvc pull --remote s3remote
