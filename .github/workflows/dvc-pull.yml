@@ -26,5 +26,5 @@ jobs:
                 audience: sts.amazonaws.com
             - name: Dataset pull
               run: | 
-              dvc pull --remote s3remote
-              cd data/ && dvc pull --remote s3remote
+                dvc pull --remote s3remote
+                cd data/ && dvc pull --remote s3remote
