@@ -5,3 +5,4 @@ data/census.csv
 dvc_on_heroku_instructions.md
 .dvc/cache
 iam-vadim_accessKeys.csv
+/census_cleaned.csv
