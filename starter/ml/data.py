@@ -1,3 +1,11 @@
+"""
+This module is dedicated data preprocessing.
+
+Authors: Udacity | Vadim Polovnikov
+Date: 2024-03-25
+"""
+
+
 import numpy as np
 from sklearn.preprocessing import LabelBinarizer, OneHotEncoder
 
@@ -11,13 +19,10 @@ def process_data(
     label binarizer for the labels. This can be used in either training or
     inference/validation.
 
-    Note: depending on the type of model used, you may want to add in functionality that
-    scales the continuous data.
-
     Inputs
     ------
     X : pd.DataFrame
-        Dataframe containing the features and label. Columns in `categorical_features`
+        Dataframe containing the features and label.
     categorical_features: list[str]
         List containing the names of the categorical features (default=[])
     label : str
