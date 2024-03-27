@@ -7,8 +7,8 @@ Date: 2024-03-25
 
 from sklearn.model_selection import train_test_split
 import pandas as pd
-import numpy as np
 import subprocess
+import pickle
 from ml import data, model
 
 
@@ -19,8 +19,10 @@ except FileNotFoundError:
     subprocess.run(["dvc", "pull", "-R", "--remote", "s3remote"])
     dataset = pd.read_csv("../cleaned_data/census_cleaned.csv")
 
-# Optional enhancement, use K-fold cross validation instead of a train-test split.
-train, test = train_test_split(dataset, test_size=0.20, stratify=["salary"])
+# Optional enhancement, use K-fold cross validation instead
+# of a train-test split.
+train, test = train_test_split(dataset, test_size=0.20,
+                               stratify=["salary"])
 
 cat_features = [
     "workclass",
@@ -32,10 +34,25 @@ cat_features = [
     "sex",
     "native-country",
 ]
+
+# Tranforming training data
 X_train, y_train, encoder, lb = data.process_data(
-    train, categorical_features=cat_features, label="salary", training=True
+    train,
+    categorical_features=cat_features,
+    label="salary",
+    training=True
 )
 
-# Proces the test data with the process_data function.
+# Processing the test data
+data.process_data(
+    test,
+    categorical_features=cat_features,
+    label="salary",
+    training=False,
+    encoder=encoder,
+    lb=lb
+)
 
 # Train and save a model.
+model = model.train_model(X_train, y_train)
+pickle.dump(model, open("../model/model.pkl", "rb"))

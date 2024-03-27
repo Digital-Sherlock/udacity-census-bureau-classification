@@ -1,6 +1,6 @@
 from sklearn.metrics import fbeta_score, precision_score, recall_score
 from sklearn.linear_model import LogisticRegression
-import numpy as np
+import numpy
 
 
 # Optional: implement hyperparameter tuning.
@@ -23,7 +23,8 @@ def train_model(X_train, y_train):
     # Checking for input data
     assert isinstance(X_train, numpy.ndarray), "X_train has to be Numpy array"
     assert isinstance(y_train, numpy.ndarray), "y_train has to be Numpy array"
-    assert X_train.shape[0] == y_train.shape[0], "Check inputs shapes"
+    assert X_train.shape[0] == y_train.shape[0], \
+        "Number of input and target variables don't match"
 
     # Initializing a model
     lr = LogisticRegression(random_state=42)
@@ -36,7 +37,8 @@ def train_model(X_train, y_train):
 
 def compute_model_metrics(y, preds):
     """
-    Validates the trained machine learning model using precision, recall, and F1.
+    Validates the trained machine learning model using
+    precision, recall, and F1.
 
     Inputs
     ------
@@ -70,7 +72,7 @@ def inference(model, X):
     preds : np.array
         Predictions from the model.
     """
-    
+
     yhat = model.predict(X)
 
     return yhat
