@@ -1,4 +1,5 @@
 data/census.csv
+census_cleaned/cleaned_data.csv
 /config.local
 /tmp
 /cache
@@ -7,3 +8,4 @@ dvc_on_heroku_instructions.md
 iam-vadim_accessKeys.csv
 /census_cleaned.csv
 devnotes.txt
+jupyter_notebook.ipynb

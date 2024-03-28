@@ -21,8 +21,7 @@ except FileNotFoundError:
 
 # Optional enhancement, use K-fold cross validation instead
 # of a train-test split.
-train, test = train_test_split(dataset, test_size=0.20,
-                               stratify=["salary"])
+train, test = train_test_split(dataset, test_size=0.20, random_state=42)
 
 cat_features = [
     "workclass",
@@ -55,4 +54,4 @@ data.process_data(
 
 # Train and save a model.
 model = model.train_model(X_train, y_train)
-pickle.dump(model, open("../model/model.pkl", "rb"))
+pickle.dump(model, open("../model/model.pkl", "wb"))
