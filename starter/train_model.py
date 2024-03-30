@@ -43,7 +43,7 @@ X_train, y_train, encoder, lb = data.process_data(
 )
 
 # Processing the test data
-data.process_data(
+X_test, y_test, _, _ = data.process_data(
     test,
     categorical_features=cat_features,
     label="salary",
