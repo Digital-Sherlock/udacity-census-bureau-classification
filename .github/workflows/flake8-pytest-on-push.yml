@@ -36,7 +36,7 @@ jobs:
         
     - name: Installing dependencies for tests
       run: |
-        pip dvc install numpy pandas scikit-learn
+        pip install dvc numpy pandas scikit-learn
 
     - name: Test with pytest
       run: |
