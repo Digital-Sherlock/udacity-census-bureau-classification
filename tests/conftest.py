@@ -6,18 +6,18 @@ Author: Vadim Polovnikov
 Date: 2024-03-30
 """
 
+import sys
 import pytest
 import pandas as pd
 import subprocess
 from sklearn.model_selection import train_test_split
 import pickle
-import os
-import sys
 
 # Adding ml package to Python path
 sys.path.append("/Users/vpolovnikov/Documents/GitHub/udacityprojectfour/")
 
 from ml.data import process_data
+
 
 cat_features = [
     "workclass",
@@ -29,6 +29,7 @@ cat_features = [
     "sex",
     "native-country",
 ]
+
 
 @pytest.fixture(scope="function")
 def x_train_y_train():
@@ -49,11 +50,12 @@ def x_train_y_train():
 
     train, _ = train_test_split(dataset, test_size=0.20, random_state=42)
 
-    X_train, y_train, encoder, lb = process_data(train,
-                 categorical_features=cat_features,
-                 label='salary',
-                 training=True)
-    
+    X_train, y_train, encoder, lb = process_data(
+        train,
+        categorical_features=cat_features,
+        label='salary',
+        training=True)
+
     return X_train, y_train, encoder, lb
 
 
@@ -79,20 +81,20 @@ def test_set():
     train, test = train_test_split(dataset, test_size=0.20, random_state=42)
 
     # Getting encoder and lb for the test dataset encoding
-    _, _, encoder, lb = process_data(train,
-                 categorical_features=cat_features,
-                 label='salary',
-                 training=True)
+    _, _, encoder, lb = process_data(
+        train,
+        categorical_features=cat_features,
+        label='salary',
+        training=True)
 
     # Extracting y_test
     X_test, y_test, _, _ = process_data(
-    test,
-    categorical_features=cat_features,
-    label="salary",
-    training=False,
-    encoder=encoder,
-    lb=lb
-    )
+        test,
+        categorical_features=cat_features,
+        label="salary",
+        training=False,
+        encoder=encoder,
+        lb=lb)
 
     return X_test, y_test
 
@@ -126,20 +128,20 @@ def y_pred():
     train, test = train_test_split(dataset, test_size=0.20, random_state=42)
 
     # Getting encoder and lb for the test dataset encoding
-    _, _, encoder, lb = process_data(train,
-                 categorical_features=cat_features,
-                 label='salary',
-                 training=True)
+    _, _, encoder, lb = process_data(
+        train,
+        categorical_features=cat_features,
+        label='salary',
+        training=True)
 
     # Extracting y_test
     X_test, _, _, _ = process_data(
-    test,
-    categorical_features=cat_features,
-    label="salary",
-    training=False,
-    encoder=encoder,
-    lb=lb
-    )
+        test,
+        categorical_features=cat_features,
+        label="salary",
+        training=False,
+        encoder=encoder,
+        lb=lb)
 
     # Making preditcions
     y_pred = model.predict(X_test)

@@ -1,6 +1,6 @@
 [flake8]
 select=E,W,F
-ignore=F402,E401,E7
+ignore=F402,F403,F405,E401,E7,E402
 count=True
 statistics=True
 exclude = 

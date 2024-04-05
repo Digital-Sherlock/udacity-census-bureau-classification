@@ -6,9 +6,8 @@ Author: Vadim Polovnikov
 Date: 2024-03-30
 """
 
-#imports
 from ml.model import *
-import numpy as np
+import numpy
 
 
 def test_train_model(x_train_y_train):
@@ -29,7 +28,7 @@ def test_train_model(x_train_y_train):
     assert isinstance(y_train, numpy.ndarray), "y_train has to be Numpy array"
     assert X_train.shape[0] == y_train.shape[0], \
         "Number of input and target variables don't match"
-    
+
     model = train_model(X_train, y_train)
 
     return model
@@ -54,7 +53,7 @@ def test_compute_model_metrics(test_set, y_pred):
 
     # Testing input shapes
     assert y.shape[0] == y_pred.shape[0], "y and y_pred have different shapes"
-    
+
     # Getting model metrics
     precision, recall, fbeta = compute_model_metrics(y, y_pred)
 
@@ -94,5 +93,3 @@ def test_inference(test_set, get_model):
         assert isinstance(yhat, numpy.generic)
 
     return yhat
-
-    

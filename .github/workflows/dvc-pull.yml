@@ -24,7 +24,5 @@ jobs:
                 role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}
                 role-skip-session-tagging: true
                 audience: sts.amazonaws.com
-            - name: source data pull
-              run: cd data/ && dvc pull --remote s3remote
-            - name: cleaned data pull
-              run: cd cleaned_data/ && dvc pull --remote s3remote
+            - name: data pull
+              run: dvc pull -R --remote s3remote
