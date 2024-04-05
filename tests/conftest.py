@@ -7,6 +7,7 @@ Date: 2024-03-30
 """
 
 import sys
+import os
 import pytest
 import pandas as pd
 import subprocess
@@ -14,7 +15,8 @@ from sklearn.model_selection import train_test_split
 import pickle
 
 # Adding ml package to Python path
-sys.path.append("/Users/vpolovnikov/Documents/GitHub/udacityprojectfour/")
+cwd = os.getcwd()
+sys.path.append(os.path.dirname(cwd))
 
 from ml.data import process_data
 
