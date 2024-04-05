@@ -15,8 +15,7 @@ from sklearn.model_selection import train_test_split
 import pickle
 
 # Adding ml package to Python path
-cwd = os.getcwd()
-sys.path.append(os.path.dirname(cwd))
+sys.path.append(os.getcwd())
 
 from ml.data import process_data
 
