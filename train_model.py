@@ -14,10 +14,10 @@ from ml import data, model
 
 # Loading the data
 try:
-    dataset = pd.read_csv("../cleaned_data/census_cleaned.csv")
+    dataset = pd.read_csv("./cleaned_data/census_cleaned.csv")
 except FileNotFoundError:
     subprocess.run(["dvc", "pull", "-R", "--remote", "s3remote"])
-    dataset = pd.read_csv("../cleaned_data/census_cleaned.csv")
+    dataset = pd.read_csv("./cleaned_data/census_cleaned.csv")
 
 # Optional enhancement, use K-fold cross validation instead
 # of a train-test split.
@@ -54,4 +54,4 @@ X_test, y_test, _, _ = data.process_data(
 
 # Train and save a model.
 model = model.train_model(X_train, y_train)
-pickle.dump(model, open("../model/model.pkl", "wb"))
+pickle.dump(model, open("./model/model.pkl", "wb"))

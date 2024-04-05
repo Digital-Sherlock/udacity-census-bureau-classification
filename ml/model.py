@@ -69,7 +69,7 @@ def inference(model, X):
         Data used for prediction.
     Returns
     -------
-    preds : np.array
+    yhat : np.array
         Predictions from the model.
     """
 

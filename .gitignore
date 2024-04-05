@@ -9,4 +9,6 @@ iam-vadim_accessKeys.csv
 /census_cleaned.csv
 devnotes.txt
 jupyter_notebook.ipynb
-starter/ml/__pycache__
+ml/__pycache__/
+tests/__pycache__/
+cleaned_data/census_cleaned.csv

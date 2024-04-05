@@ -11,7 +11,13 @@ import pandas as pd
 import subprocess
 from sklearn.model_selection import train_test_split
 import pickle
-from starter.ml.data import process_data
+import os
+import sys
+
+# Adding ml package to Python path
+sys.path.append("/Users/vpolovnikov/Documents/GitHub/udacityprojectfour/")
+
+from ml.data import process_data
 
 cat_features = [
     "workclass",
@@ -24,7 +30,7 @@ cat_features = [
     "native-country",
 ]
 
-pytest.fixture(scope="function")
+@pytest.fixture(scope="function")
 def x_train_y_train():
     '''
     Fixture for train_model function.
@@ -36,22 +42,22 @@ def x_train_y_train():
         y_train: (numpy.ndarray) target vars
     '''
     try:
-        dataset = pd.read_csv("../cleaned_data/census_cleaned.csv")
+        dataset = pd.read_csv("./cleaned_data/census_cleaned.csv")
     except FileNotFoundError:
         subprocess.run(["dvc", "pull", "-R", "--remote", "s3remote"])
-        dataset = pd.read_csv("../cleaned_data/census_cleaned.csv")
+        dataset = pd.read_csv("./cleaned_data/census_cleaned.csv")
 
     train, _ = train_test_split(dataset, test_size=0.20, random_state=42)
 
     X_train, y_train, encoder, lb = process_data(train,
-                 categorical_features=[cat_features],
-                 label=['salary'],
+                 categorical_features=cat_features,
+                 label='salary',
                  training=True)
     
     return X_train, y_train, encoder, lb
 
 
-pytest.fixture(scope="function")
+@pytest.fixture(scope="function")
 def test_set():
     """
     Fixture to retrieve y_test for testing
@@ -64,16 +70,19 @@ def test_set():
     """
     # Pulling the cleaned dataset
     try:
-        dataset = pd.read_csv("../cleaned_data/census_cleaned.csv")
+        dataset = pd.read_csv("./cleaned_data/census_cleaned.csv")
     except FileNotFoundError:
         subprocess.run(["dvc", "pull", "-R", "--remote", "s3remote"])
-        dataset = pd.read_csv("../cleaned_data/census_cleaned.csv")
+        dataset = pd.read_csv("./cleaned_data/census_cleaned.csv")
 
     # Spliting the dataset
-    _, test = train_test_split(dataset, test_size=0.20, random_state=42)
+    train, test = train_test_split(dataset, test_size=0.20, random_state=42)
 
     # Getting encoder and lb for the test dataset encoding
-    _, _, encoder, lb = x_train_y_train()
+    _, _, encoder, lb = process_data(train,
+                 categorical_features=cat_features,
+                 label='salary',
+                 training=True)
 
     # Extracting y_test
     X_test, y_test, _, _ = process_data(
@@ -88,7 +97,7 @@ def test_set():
     return X_test, y_test
 
 
-pytest.fixture(scope="function")
+@pytest.fixture(scope="function")
 def y_pred():
     """
     Fixture to make model predictions (y_pred) to
@@ -102,14 +111,57 @@ def y_pred():
 
     # Loading a model
     try:
-        model = pickle.load(open("../model/model.pkl", "rb"))
+        model = pickle.load(open("./model/model.pkl", "rb"))
     except FileNotFoundError:
         print("model.pkl doens't exist")
 
-    # Retrieving test dataset
-    X_test, _ = test_set()
+    # Pulling the cleaned dataset
+    try:
+        dataset = pd.read_csv("./cleaned_data/census_cleaned.csv")
+    except FileNotFoundError:
+        subprocess.run(["dvc", "pull", "-R", "--remote", "s3remote"])
+        dataset = pd.read_csv("./cleaned_data/census_cleaned.csv")
+
+    # Spliting the dataset
+    train, test = train_test_split(dataset, test_size=0.20, random_state=42)
+
+    # Getting encoder and lb for the test dataset encoding
+    _, _, encoder, lb = process_data(train,
+                 categorical_features=cat_features,
+                 label='salary',
+                 training=True)
+
+    # Extracting y_test
+    X_test, _, _, _ = process_data(
+    test,
+    categorical_features=cat_features,
+    label="salary",
+    training=False,
+    encoder=encoder,
+    lb=lb
+    )
 
     # Making preditcions
     y_pred = model.predict(X_test)
 
     return y_pred
+
+
+@pytest.fixture(scope="function")
+def get_model():
+    """
+    Fixture for retreiving model.
+
+    Input:
+        - None
+    Output:
+        - model: (sklearn.linear_model._logistic.LogisticRegression)
+                trained model
+    """
+
+    try:
+        model = pickle.load(open("./model/model.pkl", "rb"))
+    except FileNotFoundError:
+        print("model.pkl doens't exist")
+
+    return model
