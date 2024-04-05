@@ -11,4 +11,3 @@ jupyter_notebook.ipynb
 ml/__pycache__/
 tests/__pycache__/
 cleaned_data/census_cleaned.csv
-ml/__pycache__/model.cpython-311.pyc
