@@ -15,6 +15,7 @@ from sklearn.model_selection import train_test_split
 import pickle
 
 # Adding ml package to Python path
+# Below will work if pytest executes from root project folder
 sys.path.append(os.getcwd())
 
 from ml.data import process_data
