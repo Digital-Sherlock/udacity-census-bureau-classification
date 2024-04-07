@@ -40,7 +40,8 @@ jobs:
         fastapi httpx uvicorn
 
     - name: Starting uvicorn server
-      run: uvicorn main:app
+      # Attempt to run server on the background
+      run: uvicorn main:app &
 
     - name: Configure AWS credentials for dvc pull
       uses: aws-actions/configure-aws-credentials@v4
