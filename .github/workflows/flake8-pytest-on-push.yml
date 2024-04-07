@@ -36,7 +36,11 @@ jobs:
         
     - name: Installing dependencies for tests
       run: |
-        pip install dvc[s3] numpy pandas scikit-learn fastapi
+        pip install dvc[s3] numpy pandas scikit-learn
+        fastapi httpx uvicorn
+
+    - name: Starting uvicorn server
+      run: uvicorn main:app
 
     - name: Configure AWS credentials for dvc pull
       uses: aws-actions/configure-aws-credentials@v4
