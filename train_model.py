@@ -52,6 +52,10 @@ X_test, y_test, _, _ = data.process_data(
     lb=lb
 )
 
-# Train and save a model.
+# Training and saving a model.
 model = model.train_model(X_train, y_train)
 pickle.dump(model, open("./model/model.pkl", "wb"))
+
+# Saving encoders
+pickle.dump(encoder, open("./model/encoder.pkl", "wb"))
+pickle.dump(lb, open("./model/lb.pkl", "wb"))

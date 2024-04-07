@@ -32,6 +32,24 @@ cat_features = [
     "native-country",
 ]
 
+@pytest.fixture(scope="function")
+def data():
+    """
+    Retrieve census_cleaned.csv.
+
+    Input:
+        - None
+    Output:
+        - df: (pd.DataFrame) cleaned_data DF
+    """
+    try:
+        df = pd.read_csv("./cleaned_data/census_cleaned.csv")
+    except FileNotFoundError:
+        subprocess.run(["dvc", "pull", "-R", "--remote", "s3remote"])
+        df = pd.read_csv("./cleaned_data/census_cleaned.csv")
+
+    return df
+
 
 @pytest.fixture(scope="function")
 def x_train_y_train():
