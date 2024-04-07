@@ -4,17 +4,18 @@ Used to test main.py API endpoints.
 Author: Vadim Polovnikov
 Date: 2024-04-06
 """
+from main import app
 import sys
 import os
 import numpy as np
 from fastapi.testclient import TestClient
 # Pytest has to be executed from root project dir
 sys.path.append(os.getcwd())
-from main import app
 
 
 # Defining a client for testing
 client = TestClient(app)
+
 
 def test_greeter():
     """
@@ -43,19 +44,19 @@ def test_columns(data):
         - None
     """
     data_variables = [
-    'age',
-    'workclass',
-    'fnlgt',
-    'education',
-    'education-num',
-    'marital-status',
-    'occupation',
-    'relationship',
-    'race',
-    'sex',
-    'hours-per-week',
-    'native-country', 
-    'salary'
+        'age',
+        'workclass',
+        'fnlgt',
+        'education',
+        'education-num',
+        'marital-status',
+        'occupation',
+        'relationship',
+        'race',
+        'sex',
+        'hours-per-week',
+        'native-country',
+        'salary'
     ]
     assert len(data.columns) == 13, "Invalid number of variables"
     assert set(data.columns).issubset(set(data_variables)), \
@@ -72,7 +73,9 @@ def test_make_predictions(data):
 
     response = client.post(
         url="/inference",
-        json=testset_json
-        )
+        content=testset_json
+    )
 
     assert response.status_code == 200
+    assert response.json() == {"model_prediction": "0"} or \
+        {"model_prediction": "1"}

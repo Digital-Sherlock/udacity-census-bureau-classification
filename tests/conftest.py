@@ -6,6 +6,7 @@ Author: Vadim Polovnikov
 Date: 2024-03-30
 """
 
+from ml.data import process_data
 import sys
 import os
 import pytest
@@ -18,8 +19,6 @@ import pickle
 # Below will work if pytest executes from root project folder
 sys.path.append(os.getcwd())
 
-from ml.data import process_data
-
 
 cat_features = [
     "workclass",
@@ -31,6 +30,7 @@ cat_features = [
     "sex",
     "native-country",
 ]
+
 
 @pytest.fixture(scope="function")
 def data():

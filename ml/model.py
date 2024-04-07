@@ -58,14 +58,13 @@ def compute_model_metrics(y, preds):
     return precision, recall, fbeta
 
 
-
 def compute_slice_perf():
     """
     Computes model performance on given
     slices of data (categorical features).
 
     Input:
-        - 
+        -
     Output:
         -
     """
