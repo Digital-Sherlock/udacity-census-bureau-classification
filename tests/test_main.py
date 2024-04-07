@@ -4,7 +4,12 @@ Used to test main.py API endpoints.
 Author: Vadim Polovnikov
 Date: 2024-04-06
 """
-from main import app
+
+import sys
+import os
+# Adjusting PYTHONPATH
+# Below will work if pytest executes from root project folder
+sys.path.append(os.getcwd()); from main import app
 import numpy as np
 from fastapi.testclient import TestClient
 
