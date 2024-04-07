@@ -5,12 +5,8 @@ Author: Vadim Polovnikov
 Date: 2024-04-06
 """
 from main import app
-import sys
-import os
 import numpy as np
 from fastapi.testclient import TestClient
-# Pytest has to be executed from root project dir
-sys.path.append(os.getcwd())
 
 
 # Defining a client for testing

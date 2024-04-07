@@ -6,7 +6,6 @@ Author: Vadim Polovnikov
 Date: 2024-03-30
 """
 
-from ml.data import process_data
 import sys
 import os
 import pytest
@@ -14,10 +13,9 @@ import pandas as pd
 import subprocess
 from sklearn.model_selection import train_test_split
 import pickle
-
 # Adding ml package to Python path
 # Below will work if pytest executes from root project folder
-sys.path.append(os.getcwd())
+sys.path.append(os.getcwd()); from ml.data import process_data
 
 
 cat_features = [

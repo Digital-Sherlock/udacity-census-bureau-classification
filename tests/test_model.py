@@ -6,8 +6,12 @@ Author: Vadim Polovnikov
 Date: 2024-03-30
 """
 
-from ml.model import *
+import sys
+import os
 import numpy
+# Adding ml package to Python path
+# Below will work if pytest executes from root project folder
+sys.path.append(os.getcwd()); from ml.model import *
 
 
 def test_train_model(x_train_y_train):
