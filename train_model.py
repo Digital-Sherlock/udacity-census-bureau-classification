@@ -10,6 +10,7 @@ import pandas as pd
 import subprocess
 import pickle
 from ml import data, model
+from constants import cat_features
 
 
 # Loading the data
@@ -22,17 +23,6 @@ except FileNotFoundError:
 # Optional enhancement, use K-fold cross validation instead
 # of a train-test split.
 train, test = train_test_split(dataset, test_size=0.20, random_state=42)
-
-cat_features = [
-    "workclass",
-    "education",
-    "marital-status",
-    "occupation",
-    "relationship",
-    "race",
-    "sex",
-    "native-country",
-]
 
 # Tranforming training data
 X_train, y_train, encoder, lb = data.process_data(

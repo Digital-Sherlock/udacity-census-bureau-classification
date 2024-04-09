@@ -16,18 +16,7 @@ import pickle
 # Adding ml package to Python path
 # Below will work if pytest executes from root project folder
 sys.path.append(os.getcwd()); from ml.data import process_data
-
-
-cat_features = [
-    "workclass",
-    "education",
-    "marital-status",
-    "occupation",
-    "relationship",
-    "race",
-    "sex",
-    "native-country",
-]
+from constants import cat_features
 
 
 @pytest.fixture(scope="function")

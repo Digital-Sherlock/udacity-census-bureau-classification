@@ -80,3 +80,21 @@ def test_make_predictions(data):
     assert response.status_code == 200
     assert response.json() == {"model_prediction": "0"} or \
         {"model_prediction": "1"}
+
+
+def test_make_predictions_unknown_input_variables(data):
+    """
+    Tests make_predictions() when unknown input variables
+    are sent.
+    """
+    # Containts target vartiable "salary"
+    invalid_set_json = data.iloc[np.random.randint(0, len(data)), :].to_json()
+
+    response = client.post(
+        url='/inference',
+        content=invalid_set_json
+    )
+
+    # Checking proper response from API
+    assert response.status_code == 400
+    assert "Body contains unknown input variables." in response.content

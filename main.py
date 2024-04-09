@@ -17,14 +17,13 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 # Adding current folder to PYTHONPATH
 sys.path.append(os.getcwd())
+from constants import cat_features
 
 
 # Initializing the app
 app = FastAPI()
 
-# Defining a data structure of POST req
-
-
+# Defining a data structure for POST req
 class InferenceBody(BaseModel):
     age: int
     workclass: str
@@ -70,18 +69,36 @@ def make_predictions(infset: InferenceBody) -> dict:
         subprocess.run(["dvc", "pull", "-R", "--remote", "s3remote"])
         df_origin = pd.read_csv("./cleaned_data/census_cleaned.csv")
 
-    df_origin_features = df_origin.columns
-    # Serializes POST req body to python dict with alias
+    # Removing target variables
+    df_origin.pop("salary")
+    # De-serializes POST req body to python dict with alias
     infset_dict = infset.model_dump(by_alias=True)
-    infset_features = list(infset_dict.keys())
 
-    # Checking if passed features exist in the dataset
-    # model was trained on
-    if set(infset_features).issubset(set(df_origin_features)) == False:
-        raise HTTPException(
-            status_code=400,
-            detail=f"""Body contains unknown input variables.
-                Request parameters - {infset_dict}""")
+    # Creating a dict of expected data ranges/values
+    expected_values_dict = {}
+    for feature in df_origin.columns:
+        if df_origin[feature].dtype == 'int64':
+            expected_values_dict[feature] = \
+                (min(df_origin[feature]), max(df_origin[feature]))
+        else: # if dtype == 'object'
+            expected_values_dict[feature] = df_origin[feature].unique()
+    
+    # Checking for valid data ranges/values
+    for attr in list(infset_dict.keys()):
+        if type(infset_dict[attr]) == int:
+            minimun = expected_values_dict[attr][0]
+            maximum = expected_values_dict[attr][1]
+            if infset_dict[attr] < minimun or infset_dict[attr] > maximum:
+                raise HTTPException(
+                    status_code = 400,
+                    detail=f"Invalid values for {attr} ({infset_dict[attr]})"
+                )
+        elif type(infset_dict[attr]) == str:
+            if infset_dict[attr] not in expected_values_dict[attr]:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Invalid value for {attr} ({infset_dict[attr]})"
+                )
 
     # Convert dict to df for preprocessing
     index = len([list(infset_dict.values())[0]])
@@ -96,20 +113,8 @@ def make_predictions(infset: InferenceBody) -> dict:
     except FileNotFoundError as err:
         raise HTTPException(
             status_code=503,
-            detail=f"Unable to load model/encoder - {err}"
+            detail="Unable to load model/encoder - {err}"
         )
-
-    # Cat features for futher preprocessing
-    cat_features = [
-        "workclass",
-        "education",
-        "marital-status",
-        "occupation",
-        "relationship",
-        "race",
-        "sex",
-        "native-country",
-    ]
 
     # Processing inference set
     X, _, _, _ = process_data(
