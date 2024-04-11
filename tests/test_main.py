@@ -5,13 +5,14 @@ Author: Vadim Polovnikov
 Date: 2024-04-06
 """
 
+from fastapi.testclient import TestClient
+import numpy as np
 import sys
 import os
 # Adjusting PYTHONPATH
 # Below will work if pytest executes from root project folder
-sys.path.append(os.getcwd()); from main import app
-import numpy as np
-from fastapi.testclient import TestClient
+sys.path.append(os.getcwd())
+from main import app
 
 
 # Defining a client for testing
@@ -87,14 +88,22 @@ def test_make_predictions_unknown_input_variables(data):
     Tests make_predictions() when unknown input variables
     are sent.
     """
-    # Containts target vartiable "salary"
-    invalid_set_json = data.iloc[np.random.randint(0, len(data)), :].to_json()
+    sample_data = data.iloc[np.random.randint(0, len(data)), :]
 
-    response = client.post(
-        url='/inference',
-        content=invalid_set_json
-    )
-
-    # Checking proper response from API
-    assert response.status_code == 400
-    assert "Body contains unknown input variables." in response.content
+    # Tweaking random feaure
+    random_feature = np.random.randint(len(sample_data.index))
+    for feature in range(random_feature):
+        if isinstance(sample_data[feature], str):
+            sample_data[feature] = -1
+            response = client.post(
+                url='/inference',
+                content=sample_data
+            )
+            assert response.status_code == 400
+        else:
+            sample_data[feature] = "dummy"
+            response = client.post(
+                url='/inference',
+                content=sample_data
+            )
+            assert response.status_code == 400

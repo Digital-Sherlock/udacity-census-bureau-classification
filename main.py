@@ -6,8 +6,7 @@ inference.
 Author: Vadim Polovnikov
 Date: 2024-04-05
 """
-from ml.model import inference
-from ml.data import process_data
+from constants import cat_features
 import sys
 import os
 import pandas as pd
@@ -17,13 +16,16 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 # Adding current folder to PYTHONPATH
 sys.path.append(os.getcwd())
-from constants import cat_features
+from ml.model import inference
+from ml.data import process_data
 
 
 # Initializing the app
 app = FastAPI()
 
 # Defining a data structure for POST req
+
+
 class InferenceBody(BaseModel):
     age: int
     workclass: str
@@ -80,20 +82,19 @@ def make_predictions(infset: InferenceBody) -> dict:
         if df_origin[feature].dtype == 'int64':
             expected_values_dict[feature] = \
                 (min(df_origin[feature]), max(df_origin[feature]))
-        else: # if dtype == 'object'
+        else:  # if dtype == 'object'
             expected_values_dict[feature] = df_origin[feature].unique()
-    
+
     # Checking for valid data ranges/values
     for attr in list(infset_dict.keys()):
-        if type(infset_dict[attr]) == int:
+        if isinstance(infset_dict[attr], int):
             minimun = expected_values_dict[attr][0]
             maximum = expected_values_dict[attr][1]
             if infset_dict[attr] < minimun or infset_dict[attr] > maximum:
                 raise HTTPException(
-                    status_code = 400,
-                    detail=f"Invalid values for {attr} ({infset_dict[attr]})"
-                )
-        elif type(infset_dict[attr]) == str:
+                    status_code=400,
+                    detail=f"Value out of range {attr} ({infset_dict[attr]})")
+        elif isinstance(infset_dict[attr], str):
             if infset_dict[attr] not in expected_values_dict[attr]:
                 raise HTTPException(
                     status_code=400,
@@ -113,7 +114,7 @@ def make_predictions(infset: InferenceBody) -> dict:
     except FileNotFoundError as err:
         raise HTTPException(
             status_code=503,
-            detail="Unable to load model/encoder - {err}"
+            detail=f"Unable to load model/encoder - {err}"
         )
 
     # Processing inference set
