@@ -6,7 +6,6 @@ Author: Vadim Polovnikov
 Date: 2024-03-30
 """
 
-from constants import cat_features
 import sys
 import os
 import pytest
@@ -18,6 +17,7 @@ import pickle
 # Below will work if pytest executes from root project folder
 sys.path.append(os.getcwd())
 from ml.data import process_data
+from constants import cat_features
 
 
 @pytest.fixture(scope="function")
