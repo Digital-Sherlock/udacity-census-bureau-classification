@@ -9,131 +9,59 @@ Date: 2024-04-15
 """
 
 import pandas as pd
-import numpy as np
 import subprocess
-from snorkel.slicing import slicing_function, slice_dataframe
-from constants import cat_features
+from snorkel.slicing import slicing_function, PandasSFApplier
+from snorkel.analysis import Scorer
+from snorkel.utils import preds_to_probs
+import pickle
+from ml.model import inference
 
 
 try:
-    df = pd.read_csv("./cleaned_data/census_cleaned.csv")
+    df_test = pd.read_csv("./data/test_df.csv")
 except FileNotFoundError:
-    subprocess.run(["dvc", "pull", "-R", "--remote", "s3remote"])
-    df = pd.read_csv("./cleaned_data/census_cleaned.csv")
+    subprocess.run(["python", "train_model.py"])
 
 
-def least_repr_cats(df=df, cat_features=cat_features):
-    """
-    This function identifies least
-    representative categories and outputs
-    them in a dictionary in the feature:cat
-    pairs.
-
-    Input:
-        - dataframe: (pd.DataFrame) input DF
-    Output:
-        - least_rep_dict: (dict) dictionary
-    """
-    least_rep_dict = {}
-
-    # DF made of cat features only
-    cat_df = df.select_dtypes(include=[object])
-    cat_df.pop('salary')
-
-    for feature in cat_df.columns:
-        least_rep_dict[feature] = cat_df[feature].value_counts().index[-1]
-
-    return least_rep_dict
-
-
-least_repr_dict = least_repr_cats()
-
-
-# Defining SFs
+# Looking for young people in the gov positions
 @slicing_function()
-def workclass_least_repr(x):
-    """
-    SF for least representative category
-    in workclass feature.
-    """
-    return x['workclass'] == least_repr_dict['workclass']
+def young_people(x):
+    return x.age < 30
 
 
 @slicing_function()
-def education_least_repr(x):
-    """
-    SF for least representative category
-    in education feature.
-    """
-    return x['education'] == least_repr_dict['education']
+def gov_workers(x):
+    return x.workclass == 'State-gov' or x.workclass == 'Local-gov'
 
 
-@slicing_function()
-def marital_status_least_repr(x):
-    """
-    SF for least representative category
-    in marital-status feature.
-    """
-    return x['marital-status'] == least_repr_dict['marital-status']
+young_gov_workers_sfs = [young_people, gov_workers]
 
+# Intializing PandasSFApplier
+applier = PandasSFApplier(young_gov_workers_sfs)
 
-@slicing_function()
-def occupation_least_repr(x):
-    """
-    SF for least representative category
-    in occupation feature.
-    """
-    return x['occupation'] == least_repr_dict['occupation']
+# Sliced DF
+S_test = applier.apply(df_test)
 
+# Defining a scoring method
+scorer = Scorer(metrics=['f1'])
 
-@slicing_function()
-def relationship_least_repr(x):
-    """
-    SF for least representative category
-    in relationship feature.
-    """
-    return x['relationship'] == least_repr_dict['relationship']
+# Getting predictions
+model = pickle.load(open("./model/model.pkl", "rb"))
+X_test = pd.read_csv("./data/X_test.csv")
+preds = inference(model, X_test)
+probs = preds_to_probs(preds, 2)
 
+# Loading target variables
+y_test = pd.read_csv("./data/y_test.csv")
 
-@slicing_function()
-def race_least_repr(x):
-    """
-    SF for least representative category
-    in race feature.
-    """
-    return x['race'] == least_repr_dict['race']
+# Scoring
+score = scorer.score_slices(
+    S=S_test,
+    golds=y_test,
+    preds=preds,
+    probs=probs,
+    as_dataframe=True
+)
 
-
-@slicing_function()
-def sex_least_repr(x):
-    """
-    SF for least representative category
-    in sex feature.
-    """
-    return x['sex'] == least_repr_dict['sex']
-
-
-@slicing_function()
-def native_country_least_repr(x):
-    """
-    SF for least representative category
-    in native_country feature.
-    """
-    return x['native_country'] == least_repr_dict['native_country']
-
-
-# Defining a list of SFs
-
-# I doubt there will be any data point that
-# will satisfy them all; combining some of
-# them might be a good idea
-sfs = [
-    workclass_least_repr,
-    education_least_repr,
-    marital_status_least_repr,
-    occupation_least_repr,
-    relationship_least_repr,
-    race_least_repr,
-    sex_least_repr,
-    native_country_least_repr
-]
+# Saving score df
+score.to_csv("./model/slice_perf.csv")

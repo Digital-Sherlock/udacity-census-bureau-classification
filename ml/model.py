@@ -1,4 +1,4 @@
-from sklearn.metrics import fbeta_score, precision_score, recall_score
+from sklearn.metrics import f1_score, precision_score, recall_score
 from sklearn.linear_model import LogisticRegression
 import numpy
 
@@ -52,7 +52,7 @@ def compute_model_metrics(y, preds):
     recall : float
     fbeta : float
     """
-    fbeta = fbeta_score(y, preds, beta=1, zero_division=1)
+    fbeta = f1_score(y, preds)
     precision = precision_score(y, preds, zero_division=1)
     recall = recall_score(y, preds, zero_division=1)
     return precision, recall, fbeta

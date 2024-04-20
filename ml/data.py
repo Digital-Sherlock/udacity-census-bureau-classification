@@ -7,7 +7,7 @@ Date: 2024-03-25
 
 
 import numpy as np
-from sklearn.preprocessing import LabelBinarizer, OneHotEncoder
+from sklearn.preprocessing import LabelBinarizer, OneHotEncoder, StandardScaler
 
 
 def process_data(
@@ -16,7 +16,8 @@ def process_data(
     label=None,
     training=True,
     encoder=None,
-    lb=None
+    lb=None,
+    std_scaler=None
 ):
     """ Process the data used in the machine learning pipeline.
 
@@ -39,6 +40,8 @@ def process_data(
         Trained sklearn OneHotEncoder, only used if training=False.
     lb : sklearn.preprocessing._label.LabelBinarizer
         Trained sklearn LabelBinarizer, only used if training=False.
+    std_scaler: sklearn.preprocessing._encoders.StandardScaler
+        Trained sklearn StandardScaler, only used if training=False.
 
     Returns
     -------
@@ -52,6 +55,9 @@ def process_data(
     lb : sklearn.preprocessing._label.LabelBinarizer
         Trained LabelBinarizer if training is True, otherwise returns
         the binarizer passed in.
+    std_scaler: klearn.preprocessing._encoders.StandardScaler
+        Trained StandardScaler if training is True, otherwise returns
+        the scaler passed in.
     """
 
     # Separating input variables and label
@@ -68,10 +74,14 @@ def process_data(
     if training is True:
         encoder = OneHotEncoder(sparse=False, handle_unknown="ignore")
         lb = LabelBinarizer()
+        std_scaler = StandardScaler()
+
+        X_numerical = std_scaler.fit_transform(X_numerical)
         X_categorical = encoder.fit_transform(X_categorical)
         y = lb.fit_transform(y.values).ravel()
     else:
         X_categorical = encoder.transform(X_categorical)
+        X_numerical = std_scaler.transform(X_numerical)
         try:
             y = lb.transform(y.values).ravel()
         # Catch the case where y is None because we're doing inference.
@@ -80,4 +90,4 @@ def process_data(
 
     # Putting numerical and encoded cat features together
     X = np.concatenate([X_numerical, X_categorical], axis=1)
-    return X, y, encoder, lb
+    return X, y, encoder, lb, std_scaler
