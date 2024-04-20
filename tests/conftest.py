@@ -58,13 +58,13 @@ def x_train_y_train():
 
     train, _ = train_test_split(dataset, test_size=0.20, random_state=42)
 
-    X_train, y_train, encoder, lb = process_data(
+    X_train, y_train, encoder, lb, std_scaler = process_data(
         train,
         categorical_features=cat_features,
         label='salary',
         training=True)
 
-    return X_train, y_train, encoder, lb
+    return X_train, y_train, encoder, lb, std_scaler
 
 
 @pytest.fixture(scope="function")
@@ -89,20 +89,21 @@ def test_set():
     train, test = train_test_split(dataset, test_size=0.20, random_state=42)
 
     # Getting encoder and lb for the test dataset encoding
-    _, _, encoder, lb = process_data(
+    _, _, encoder, lb, std_scaler = process_data(
         train,
         categorical_features=cat_features,
         label='salary',
         training=True)
 
     # Extracting y_test
-    X_test, y_test, _, _ = process_data(
+    X_test, y_test, _, _, _ = process_data(
         test,
         categorical_features=cat_features,
         label="salary",
         training=False,
         encoder=encoder,
-        lb=lb)
+        lb=lb,
+        std_scaler=std_scaler)
 
     return X_test, y_test
 
@@ -136,20 +137,21 @@ def y_pred():
     train, test = train_test_split(dataset, test_size=0.20, random_state=42)
 
     # Getting encoder and lb for the test dataset encoding
-    _, _, encoder, lb = process_data(
+    _, _, encoder, lb, std_scaler = process_data(
         train,
         categorical_features=cat_features,
         label='salary',
         training=True)
 
     # Extracting y_test
-    X_test, _, _, _ = process_data(
+    X_test, _, _, _, _ = process_data(
         test,
         categorical_features=cat_features,
         label="salary",
         training=False,
         encoder=encoder,
-        lb=lb)
+        lb=lb,
+        std_scaler=std_scaler)
 
     # Making preditcions
     y_pred = model.predict(X_test)

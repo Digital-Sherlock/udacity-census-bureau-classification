@@ -25,7 +25,7 @@ def test_train_model(x_train_y_train):
         model: (sklearn.linear_model._logistic.LogisticRegression)
                 trained model
     """
-    X_train, y_train, _, _ = x_train_y_train
+    X_train, y_train, _, _, _ = x_train_y_train
 
     # Checking for input data
     assert isinstance(X_train, numpy.ndarray), "X_train has to be Numpy array"

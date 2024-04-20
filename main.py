@@ -111,6 +111,7 @@ def make_predictions(infset: InferenceBody) -> dict:
         # train_model.py, will include them in a single try-except
         encoder = pickle.load(open("./model/encoder.pkl", "rb"))
         model = pickle.load(open("./model/model.pkl", "rb"))
+        std_scaler = pickle.load(open("./model/std_scaler.pkl", "rb"))
     except FileNotFoundError as err:
         raise HTTPException(
             status_code=503,
@@ -118,13 +119,14 @@ def make_predictions(infset: InferenceBody) -> dict:
         )
 
     # Processing inference set
-    X, _, _, _ = process_data(
+    X, _, _, _, _ = process_data(
         df_infset,
         categorical_features=cat_features,
         label=None,
         training=False,
         encoder=encoder,
-        lb=None)
+        lb=None,
+        std_scaler=std_scaler)
 
     # Making predictions
     y_pred = inference(model, X)
