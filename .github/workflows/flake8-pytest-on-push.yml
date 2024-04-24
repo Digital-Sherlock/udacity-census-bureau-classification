@@ -36,7 +36,7 @@ jobs:
         
     - name: Installing dependencies for tests
       run: |
-        pip install dvc[s3] numpy pandas scikit-learn \
+        pip install dvc[s3] numpy pandas scikit-learn==0.24.2 \
         fastapi httpx uvicorn
 
     - name: Starting uvicorn server
