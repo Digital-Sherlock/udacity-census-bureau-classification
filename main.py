@@ -20,12 +20,17 @@ from ml.model import inference
 from ml.data import process_data
 
 
+if "DYNO" in os.environ and os.path.isdir(".dvc"):
+    os.system("dvc config core.no_scm true")
+    if os.system("dvc pull") != 0:
+        exit("dvc pull failed")
+    os.system("rm -r .dvc .apt/usr/lib/dvc")
+
 # Initializing the app
 app = FastAPI()
 
+
 # Defining a data structure for POST req
-
-
 class InferenceBody(BaseModel):
     age: int
     workclass: str
