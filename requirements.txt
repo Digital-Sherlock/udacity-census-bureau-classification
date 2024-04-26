@@ -3,6 +3,7 @@ pandas
 scikit-learn
 fastapi
 uvicorn
+gunicorn
 httpx
 dvc
 dvc-s3
