@@ -60,7 +60,7 @@ numexpr==2.8.4
 numpy==1.19.5
 packaging==23.2
 pandas==1.4.4
-pandas-profiling==2.4.0
+pandas-profiling
 parso==0.8.3
 pexpect==4.9.0
 phik==0.12.3
