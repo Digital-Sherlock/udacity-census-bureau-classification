@@ -97,7 +97,7 @@ seaborn==0.12.2
 setuptools==68.2.2
 six==1.16.0
 sniffio==1.3.0
-snorkel==0.10.0
+snorkel
 stack-data==0.6.2
 starlette==0.27.0
 tangled-up-in-unicode==0.2.0
