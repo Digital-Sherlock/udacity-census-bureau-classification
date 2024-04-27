@@ -25,4 +25,4 @@ sample = {"age": 33,
 
 req = requests.post(url=api_url, json=sample)
 
-print(req.text)
+print(f"[{req.status_code}] {req.text}")

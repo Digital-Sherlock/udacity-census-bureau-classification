@@ -64,4 +64,4 @@ score = scorer.score_slices(
 )
 
 # Saving score df
-score.to_csv("./model/slice_perf.csv")
+score.to_csv("./model/slice_output.csv")
